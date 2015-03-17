@@ -1,5 +1,6 @@
 import praw
 import auth
+import json
 
 from time import sleep
 
@@ -16,9 +17,12 @@ def login():
 	else:
 		print "Incorrect username or password!\nPlease check auth.py."
 
-def defien(word):
-	""" DReturns the definition of <word>. """
-	
+def define(word):
+	""" Returns the definition of <word>. """
+	return lexicon.get(word, "{} is not defined in Webster's Unabridged Dictionary.\n".format(word))
+
+
+
 
 def watch(subreddit="all", limit=10):
 	""" Watch a subreddit for LexiconBot definition request """
@@ -40,6 +44,10 @@ def watch(subreddit="all", limit=10):
 
 
 if __name__ == '__main__':
+	# Dump the JSON dictionary
+	with open('dictionary.json', 'r') as f:
+		lexicon = json.loads(f.read())
+
 	login()
 	while True:
 		watch("test")
