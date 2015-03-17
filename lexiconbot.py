@@ -19,10 +19,7 @@ def login():
 
 def define(word):
 	""" Returns the definition of <word>. """
-	return lexicon.get(word, "{} is not defined in Webster's Unabridged Dictionary.\n".format(word))
-
-
-
+	return lexicon.get(word.upper(), "I couldn't find the definition of {}\n".format(word))
 
 def watch(subreddit="all", limit=10):
 	""" Watch a subreddit for LexiconBot definition request """
@@ -42,12 +39,30 @@ def watch(subreddit="all", limit=10):
 	print "Sleeping..."
 	sleep(3)
 
+def watch2():
+	""" Watch a subreddit for LexiconBot definition request """
+	comments = r.get_comments('all', limit=None)
+	for comment in comments:
+		if comment in visited:
+			continue
+		else:
+			visited[comment] = 1
+			if "LexiconBot define" in comment.body:
+				print comment, "from", comment.permalink, " / ", comment.submission
+				msg = define(comment.body.split()[2])
+				comment.reply(msg)
+
+	print "Sleeping..."
+	sleep(1)
+
+
 
 if __name__ == '__main__':
 	# Dump the JSON dictionary
 	with open('dictionary.json', 'r') as f:
 		lexicon = json.loads(f.read())
-
+	print define("computer")
 	login()
 	while True:
-		watch("test")
+		#watch("test")
+		watch2()
